@@ -36,7 +36,7 @@ int main()
         pthread_t tid;
         char *name = new char[64];
         snprintf(name,64,"thread %d",i);
-        int n = pthread_creater(&tid,nullptr,threadrun,name);
+        int n = pthread_create(&tid,nullptr,threadrun,name);
         if(n != 0)
         {
             std::cout<<"pthread_creater error"<<std::endl;
