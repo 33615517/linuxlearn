@@ -6,6 +6,7 @@
 #include<arpa/inet.h>
 #include<unistd.h>
 #include<string>
+#include <cstring>
 #include<functional>
 
 //网络地址和主机地址之间进行转换的类
@@ -15,11 +16,16 @@ class InetAddr
 public:
     InetAddr(struct sockaddr_in &addr):_addr(addr)
     {
+        //网络转主机
         _port = ntohs(_addr.sin_port);
-        _ip = inet_ntoa(_addr.sin_addr);
+       // _ip = inet_ntoa(_addr.sin_addr);
+        char ip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &_addr.sin_addr, ip, sizeof(ip));
+        _ip = std::string(ip);
     }
     InetAddr(const std::string &ip,uint16_t port):_ip(ip),_port(port)
     {
+        //主机转网络
         memset(&_addr,0,sizeof(_addr));
         inet_pton(AF_INET,ip.c_str(),&_addr.sin_addr);
         _addr.sin_family = AF_INET;
