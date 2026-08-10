@@ -9,9 +9,10 @@
 #include<netinet/in.h>
 #include<functional>
 #include <strings.h>
+#include"InetAddr.hpp"
 using namespace LogModule;
 
-using func_t = std::function<const std::string(const std::string&)>; //回调函数类型，用户自定义的处理逻辑
+using func_t = std::function<const std::string(const std::string&,InetAddr&)>; //回调函数类型，用户自定义的处理逻辑
 const int defultfd = -1;
 
 
@@ -67,11 +68,12 @@ public:
             ssize_t s = recvfrom(_sockfd, _buffer, sizeof(_buffer)-1, 0, (struct sockaddr*)&peer, &len);
             if(s > 0)
             {
-                int peer_port = ntohs(peer.sin_port);
-                std::string peer_ip = inet_ntoa(peer.sin_addr);
+                InetAddr client(peer);
+                //int peer_port = ntohs(peer.sin_port);
+                //std::string peer_ip = inet_ntoa(peer.sin_addr);
                 _buffer[s] = 0;
-                std::string result = _func(_buffer);
-                LOG(Loglevel::DEBUG) << "[" << peer_ip << ":" << peer_port << "] " << _buffer;
+                std::string result = _func(_buffer,client);
+               // LOG(Loglevel::DEBUG) << "[" << peer_ip << ":" << peer_port << "] " << _buffer << " -> " << result;
                 //2.发送消息
                 // std::string sendmsg = "server echo: ";
                 // sendmsg += _buffer;

@@ -34,9 +34,9 @@ int main(int argc, char *argv[])
     //2.网络服务器对象，提供通信功能
 
 
-    std::unique_ptr<UdpServer> usvr = std::make_unique<UdpServer>(port,[&dict](const std::string& msg)->std::string{
-        return dict.Translate(msg);
 
+    std::unique_ptr<UdpServer> usvr = std::make_unique<UdpServer>(port,[&dict](const std::string& msg, InetAddr& client)->std::string{
+        return dict.Translate(msg, client);
     });
     usvr->Init();
     usvr->Start();
