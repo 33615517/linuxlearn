@@ -27,13 +27,19 @@ namespace SocketModule
         virtual void ListenOrDie(int backlog) = 0;
         virtual std::shared_ptr<Socket> Accept(InetAddr *client) = 0;
         virtual void Close() = 0;
-
+        virtual int Recv(std::string *out) = 0;
+        virtual int Send(const std::string& message) = 0;
+        virtual int Connect(const std::string &server_ip, uint16_t port) = 0;
     public:
         void BuildTcpSocketMethod(uint16_t port, int backlog = gbacklog)
         {
             SocketOrDie();
             BindOrDie(port);
             ListenOrDie(backlog);
+        }
+        void BuildTcpClinentSocketMethod()
+        {
+            SocketOrDie();
         }
         // void BuildUdpSocketMethod()
         // {
@@ -47,10 +53,12 @@ namespace SocketModule
     class TcpSocket : public Socket
     {
     public:
-        TcpSocket():_sockfd(defaultfd)
-        {}
-        TcpSocket(int fd):_sockfd(fd)
-        {}
+        TcpSocket() : _sockfd(defaultfd)
+        {
+        }
+        TcpSocket(int fd) : _sockfd(fd)
+        {
+        }
         ~TcpSocket() {}
         void SocketOrDie() override
         {
@@ -88,7 +96,7 @@ namespace SocketModule
             struct sockaddr_in peer;
             socklen_t len = sizeof(peer);
             int fd = ::accept(_sockfd, CONV(peer), &len);
-            if(fd < 0)
+            if (fd < 0)
             {
                 LOG(Loglevel::WARNING) << "accept warning ...";
                 return nullptr; // TODO
@@ -98,10 +106,30 @@ namespace SocketModule
         }
         void Close() //??
         {
-            if(_sockfd >= 0)
+            if (_sockfd >= 0)
                 ::close(_sockfd);
         }
-
+        virtual int Recv(std::string *out) override
+        {
+            // 流式读取，不关心读的是什么
+            char _buffer[1024];
+            ssize_t n = ::recv(_sockfd, _buffer, sizeof(_buffer) - 1, 0);
+            if (n > 0)
+            {
+                _buffer[n] = '\0';
+                *out += _buffer;
+            }
+            return n;
+        }
+        virtual int Send(const std::string& message) override
+        {
+            return ::send(_sockfd, message.c_str(), message.size(), 0);
+        }
+        virtual int Connect(const std::string &server_ip, uint16_t port) override
+        {
+            InetAddr serveraddr(server_ip, port);
+            return ::connect(_sockfd, serveraddr.NetAddrPtr(), serveraddr.NetAddrLen());
+        }
     private:
         int _sockfd; // _sockfd , listensockfd, sockfd;
     };

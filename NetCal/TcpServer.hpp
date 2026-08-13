@@ -50,6 +50,8 @@ public:
                     exit(OK);
                 // 孙子进程在执行任务，已经是孤儿了
                 _service(sock, client);
+
+                sock->Close();
                 exit(OK);
             }
             else
