@@ -57,6 +57,7 @@ public:
     int X() { return _x; }
     int Y() { return _y; }
     char Oper() { return _oper; }
+
 private:
     int _x;
     int _y;
@@ -95,15 +96,31 @@ public:
 
         return true;
     }
+    void ShowResult()
+    {
+        if (_code == 0)
+        {
+            std::cout << "result: " << _result << std::endl;
+        }
+        else if (_code == 1)
+        {
+            std::cout << "error: 除数不能为0" << std::endl;
+        }
+        else if (_code == 2)
+        {
+            std::cout << "error: 取模运算，除数不能为0" << std::endl;
+        }
+    }
     ~Response() {}
     void SetResult(int result) { _result = result; }
     void SetCode(int code) { _code = code; }
+
 private:
     int _result; // 运算结果，无法区分清楚应答是计算结果，还是异常值
     int _code;   // 0:sucess, 1,2,3,4->不同的运算异常的情况
 };
 
-using func_t = std::function<Response( Request &)>;
+using func_t = std::function<Response(Request &)>;
 // 协议(基于TCP的)需要解决两个问题：
 // 1. request和response必须得有序列化和反序列化功能
 // 2. 你必须保证，读取的时候，读到完整的请求(TCP, UDP不用考虑)
@@ -111,6 +128,9 @@ class Protocol
 {
 public:
     Protocol(func_t func) : _func(func)
+    {
+    }
+    Protocol()
     {
     }
     std::string Encode(const std::string jsonstr)
@@ -150,30 +170,39 @@ public:
             int n = sock->Recv(&inbuffer);
             if (n > 0)
             {
+                std::cout << "-----------inbuffer-----------" << std::endl;
+                std::cout << inbuffer << std::endl;
+                std::cout << "-----------inbuffer------------" << std::endl;
                 // 1.判断报文完整性
                 std::string package;
-                bool ret = Decode(inbuffer, &package);
-                if(ret)
+                while (Decode(inbuffer, &package))
                 {
-                    //一定拿到了完整的报文
-                    // 2.反序列化
+
+                    std::cout << "-----------request json------------" << std::endl;
+                    std::cout << package << std::endl;
+                    std::cout << "-----------request json------------" << std::endl;
+                    std::cout << "-----------inbuffer-----------" << std::endl;
+                    std::cout << inbuffer << std::endl;
+                    std::cout << "-----------inbuffer------------" << std::endl;
+                    // 一定拿到了完整的报文
+                    //  2.反序列化
                     Request req;
                     bool ok = req.Deserialize(package);
                     if (!ok)
                     {
-                        //我一定拿到了完整的报文，但是反序列化失败了，说明客户端发来的数据有问题
+                        // 我一定拿到了完整的报文，但是反序列化失败了，说明客户端发来的数据有问题
                         LOG(Loglevel::WARNING) << "client:" << client.StringAddr() << " request error ...";
                         continue;
                     }
                     else
                     {
-                       
+
                         Response resp = _func(req);
-                        //序列化
+                        // 序列化
                         std::string json_str = resp.Serialize();
-                        //添加自定义长度
+                        // 添加自定义长度
                         std::string send_str = Encode(json_str);
-                        //发送
+                        // 发送
                         sock->Send(send_str);
                     }
                 }
@@ -189,6 +218,63 @@ public:
                 break;
             }
         }
+    }
+    bool GetResponse(std::shared_ptr<Socket> &client, std::string &resp_buff, Response *resp)
+    {
+        // 面向字节流，你怎么保证，你的client端，发送的报文是完整的？
+        while (true)
+        {
+            int n = client->Recv(&resp_buff);
+            if (n > 0)
+            {
+                std::cout << "-----------resp_buff------------" << std::endl;
+                std::cout << resp_buff << std::endl;
+                std::cout << "-----------resp_buff------------" << std::endl;
+                // 成功
+                std::string json_package;
+                // 1.解析报文，提取完整的json请求，如果不完整，就让服务器继续读取
+                bool ret = Decode(resp_buff, &json_package);
+                if (!ret)
+                    continue;
+                std::cout << "-----------response json------------" << std::endl;
+                std::cout << json_package << std::endl;
+                std::cout << "-----------response json------------" << std::endl;
+
+                std::cout << "-----------resp_buff------------" << std::endl;
+                std::cout << resp_buff << std::endl;
+                std::cout << "-----------resp_buff------------" << std::endl;
+                // 2.走到这里，我就能保证，我拿到的json_package一定是一个完整的json报文
+                //  2.反序列化
+                resp->Deserialize(json_package);
+                return true;
+            }
+            else if (n == 0)
+            {
+                std::cerr << "server quit ..." << std::endl;
+                return false;
+            }
+            else
+            {
+                std::cerr << "recv error ..." << std::endl;
+                return false;
+            }
+        }
+    }
+    std::string BuildRequestString(int x, int y, char oper)
+    {
+        // 1.构建一个请求对象
+        Request req(x, y, oper);
+        // 2.序列化
+        std::string json_str = req.Serialize();
+        // 2.1debug
+        std::cout << "-----------json_req string------------" << std::endl;
+        std::cout << json_str << std::endl;
+
+        std::cout << "-----------resp_buff------------" << std::endl;
+        // 3.添加自定义长度报头
+        std::string send_str = Encode(json_str);
+        // 4.返回构建好的请求字符串
+        return send_str;
     }
     ~Protocol()
     {

@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
         Usage(argv[0]);
         exit(USAGE_ERR);
     }
+    //守护进程化
+
+    
     //1.顶层
     std::unique_ptr<Cal> cal = std::make_unique<Cal>();
     //2.协议层

@@ -16,6 +16,7 @@ public:
             break;
         case '-':
             resp.SetResult(req.X() - req.Y());
+            break;
         case '*':
             resp.SetResult(req.X() * req.Y());
             break;
