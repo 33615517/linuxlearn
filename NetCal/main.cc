@@ -2,7 +2,7 @@
 #include "TcpServer.hpp"
 #include "NetCal.hpp"
 #include <memory>
-
+#include "Daemon.hpp"
 void Usage(std::string proc)
 {
     std::cerr << "Usage: " << proc << " port" << std::endl;
@@ -16,8 +16,12 @@ int main(int argc, char *argv[])
         Usage(argv[0]);
         exit(USAGE_ERR);
     }
+    std::cout << "服务器已经启动，已经是守护进程化了，pid:" << getpid() << std::endl;
     //守护进程化
+    //Daemon(0, 0);
+    daemon(0, 0);
 
+    Enable_File_log_strategy();
     
     //1.顶层
     std::unique_ptr<Cal> cal = std::make_unique<Cal>();

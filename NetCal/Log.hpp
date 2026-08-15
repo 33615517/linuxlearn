@@ -43,7 +43,7 @@ namespace LogModule
         Mutex _mutex;
     };
     // 文件打印策略 ——子类
-    const std::string defaultPath = "./log";
+    const std::string defaultPath = "./var/log";
     const std::string defaultFile = "my.log";
     class FileLogStrategy : public LogStrategy
     {

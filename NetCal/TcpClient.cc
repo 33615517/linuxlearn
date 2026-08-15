@@ -37,21 +37,19 @@ int main(int argc, char *argv[])
     {
         // 1.从标准输入获取计算表达式
         std::string request_str;
-        int cnt = 3;
-        while (cnt--)
-        {
+        
             int x, y;
             char oper;
             GetDateFromStdin(&x, &y, &oper);
             // 2.构建一个请求->可以直接发送的字符串
             request_str += protocol->BuildRequestString(x, y, oper);
-            std::cout << "-----------request_str------------" << std::endl;
-            std::cout << "request_str: " << request_str << std::endl;
-            std::cout << "-----------request_str------------" << std::endl;
-        }
+            // std::cout << "-----------request_str------------" << std::endl;
+            // std::cout << "request_str: " << request_str << std::endl;
+            // std::cout << "-----------request_str------------" << std::endl;
+        
         // 3.发送请求
         client->Send(request_str);
-       sleep(2);
+       //sleep(2);
             // 4.接收响应
             Response resp;
             bool ret = protocol->GetResponse(client, resp_buff, &resp);

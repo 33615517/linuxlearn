@@ -40,6 +40,8 @@ public:
                 resp.SetResult(req.X() % req.Y());
             }
             break;
+        default:
+            resp.SetCode(3);
         }
         return resp;
     }

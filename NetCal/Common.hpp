@@ -18,7 +18,8 @@ enum ExitCode
     BIND_ERR,
     LISTEN_ERR,
     CONNECT_ERR,
-    FORK_ERR
+    FORK_ERR,
+    OPEN_ERR
 };
 
 class NoCopy

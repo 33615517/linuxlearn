@@ -110,6 +110,10 @@ public:
         {
             std::cout << "error: 取模运算，除数不能为0" << std::endl;
         }
+        else if (_code == 3)
+        {
+            std::cout << "error: 不支持的运算符" << std::endl;
+        }
     }
     ~Response() {}
     void SetResult(int result) { _result = result; }
@@ -170,22 +174,23 @@ public:
             int n = sock->Recv(&inbuffer);
             if (n > 0)
             {
-                std::cout << "-----------inbuffer-----------" << std::endl;
-                std::cout << inbuffer << std::endl;
-                std::cout << "-----------inbuffer------------" << std::endl;
+                // std::cout << "-----------inbuffer-----------" << std::endl;
+                // std::cout << inbuffer << std::endl;
+                // std::cout << "-----------inbuffer------------" << std::endl;
                 // 1.判断报文完整性
                 std::string package;
                 while (Decode(inbuffer, &package))
                 {
 
-                    std::cout << "-----------request json------------" << std::endl;
-                    std::cout << package << std::endl;
-                    std::cout << "-----------request json------------" << std::endl;
-                    std::cout << "-----------inbuffer-----------" << std::endl;
-                    std::cout << inbuffer << std::endl;
-                    std::cout << "-----------inbuffer------------" << std::endl;
+                    // std::cout << "-----------request json------------" << std::endl;
+                    // std::cout << package << std::endl;
+                    // std::cout << "-----------request json------------" << std::endl;
+                    // std::cout << "-----------inbuffer-----------" << std::endl;
+                    // std::cout << inbuffer << std::endl;
+                    // std::cout << "-----------inbuffer------------" << std::endl;
                     // 一定拿到了完整的报文
                     //  2.反序列化
+                    LOG(Loglevel::INFO) << client.StringAddr() << " request: " << package;
                     Request req;
                     bool ok = req.Deserialize(package);
                     if (!ok)
@@ -227,22 +232,22 @@ public:
             int n = client->Recv(&resp_buff);
             if (n > 0)
             {
-                std::cout << "-----------resp_buff------------" << std::endl;
-                std::cout << resp_buff << std::endl;
-                std::cout << "-----------resp_buff------------" << std::endl;
+                // std::cout << "-----------resp_buff------------" << std::endl;
+                // std::cout << resp_buff << std::endl;
+                // std::cout << "-----------resp_buff------------" << std::endl;
                 // 成功
                 std::string json_package;
                 // 1.解析报文，提取完整的json请求，如果不完整，就让服务器继续读取
                 bool ret = Decode(resp_buff, &json_package);
                 if (!ret)
                     continue;
-                std::cout << "-----------response json------------" << std::endl;
-                std::cout << json_package << std::endl;
-                std::cout << "-----------response json------------" << std::endl;
+                // std::cout << "-----------response json------------" << std::endl;
+                // std::cout << json_package << std::endl;
+                // std::cout << "-----------response json------------" << std::endl;
 
-                std::cout << "-----------resp_buff------------" << std::endl;
-                std::cout << resp_buff << std::endl;
-                std::cout << "-----------resp_buff------------" << std::endl;
+                // std::cout << "-----------resp_buff------------" << std::endl;
+                // std::cout << resp_buff << std::endl;
+                // std::cout << "-----------resp_buff------------" << std::endl;
                 // 2.走到这里，我就能保证，我拿到的json_package一定是一个完整的json报文
                 //  2.反序列化
                 resp->Deserialize(json_package);
@@ -267,10 +272,10 @@ public:
         // 2.序列化
         std::string json_str = req.Serialize();
         // 2.1debug
-        std::cout << "-----------json_req string------------" << std::endl;
-        std::cout << json_str << std::endl;
+        // std::cout << "-----------json_req string------------" << std::endl;
+        // std::cout << json_str << std::endl;
 
-        std::cout << "-----------resp_buff------------" << std::endl;
+        // std::cout << "-----------resp_buff------------" << std::endl;
         // 3.添加自定义长度报头
         std::string send_str = Encode(json_str);
         // 4.返回构建好的请求字符串
