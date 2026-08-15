@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星轨初途 - 首页</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Microsoft YaHei", sans-serif;
+            color: white;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #312e81);
+        }
+
+        .navbar {
+            height: 70px;
+            padding: 0 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            background: rgba(15, 23, 42, 0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white !important;
+        }
+
+        .hero {
+            min-height: calc(100vh - 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: 58px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            color: #a5b4fc;
+        }
+
+        .hero p {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 60px;
+        }
+
+        .buttons a {
+            padding: 14px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+        }
+
+        .more-btn {
+            border: 1px solid #64748b;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .more-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .card {
+            width: 240px;
+            padding: 28px 22px;
+
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        ✨ 星轨初途
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html">首页</a>
+        <a href="Login.html">登录</a>
+        <a href="register.html" class="register-btn">注册</a>
+    </div>
+
+</nav>
+
+
+<main class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            欢迎来到 <span>星轨初途</span>
+        </h1>
+
+        <p>
+            一个由 C++ HTTP Server 驱动的网站。<br>
+            从一次 HTTP 请求开始，探索 Web 世界。
+        </p>
+
+
+        <div class="buttons">
+
+            <a href="Login.html" class="login-btn">
+                开始使用
+            </a>
+
+            <a href="register.html" class="more-btn">
+                创建账号
+            </a>
+
+        </div>
+
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-icon">🚀</div>
+                <h3>HTTP Server</h3>
+                <p>
+                    使用 C++ 编写自己的 HTTP 服务器，
+                    处理浏览器发送的请求。
+                </p>
+            </div>
+
+
+            <div class="card">
+                <div class="card-icon">👤</div>
+                <h3>用户系统</h3>
+                <p>
+                    实现用户登录与注册，
+                    构建完整的用户系统。
+                </p>
+            </div>
+
+
+            <div class="card">
+                <div class="card-icon">💻</div>
+                <h3>Web 开发</h3>
+                <p>
+                    将 HTML、CSS 与 C++ 后端结合，
+                    构建自己的网站。
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>
