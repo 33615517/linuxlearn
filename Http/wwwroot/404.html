@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: "Microsoft YaHei", sans-serif;
+
+            color: white;
+
+            background: linear-gradient(135deg,
+                    #0f172a,
+                    #1e293b,
+                    #312e81);
+        }
+
+        .container {
+            text-align: center;
+
+            width: 90%;
+            max-width: 700px;
+
+            padding: 50px;
+
+            border-radius: 24px;
+
+            background: rgba(255, 255, 255, 0.07);
+
+            border: 1px solid rgba(255, 255, 255, 0.15);
+
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+
+            color: #a5b4fc;
+
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 18px;
+        }
+
+        p {
+            color: #cbd5e1;
+
+            font-size: 17px;
+            line-height: 1.8;
+
+            margin-bottom: 35px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .buttons a {
+            padding: 13px 28px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: 0.25s;
+        }
+
+        .home-btn {
+            color: white;
+
+            background: linear-gradient(135deg,
+                    #6366f1,
+                    #8b5cf6);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .back-btn {
+            color: white;
+
+            border: 1px solid #64748b;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tip {
+            margin-top: 35px;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+    </style>
+</head>
+  
+<body>
+
+    <div class="container">
+
+        <div class="error-code">
+            404
+        </div>
+
+        <h1>
+            页面好像迷失在星轨中了
+        </h1>
+
+        <p>
+            抱歉，你访问的页面不存在，
+            可能已经被删除、移动，或者地址输入有误。
+        </p>
+
+        <div class="buttons">
+
+            <a href="/index.html" class="home-btn">
+                返回首页
+            </a>
+
+            <a href="javascript:history.back()" class="back-btn">
+                返回上一页
+            </a>
+
+        </div>
+
+        <div class="tip">
+            ✨ 星轨初途 · C++ HTTP Server
+        </div>
+
+    </div>
+
+</body>
+
+</html>
