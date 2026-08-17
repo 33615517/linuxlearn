@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,12 +23,10 @@
 
             font-family: "Microsoft YaHei", sans-serif;
 
-            background: linear-gradient(
-                135deg,
-                #0f172a,
-                #1e293b,
-                #312e81
-            );
+            background: linear-gradient(135deg,
+                    #0f172a,
+                    #1e293b,
+                    #312e81);
         }
 
         .login-box {
@@ -36,10 +35,10 @@
 
             border-radius: 20px;
 
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 
             color: white;
         }
@@ -75,7 +74,7 @@
 
             outline: none;
 
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
 
             color: white;
             font-size: 16px;
@@ -98,11 +97,9 @@
             border: none;
             border-radius: 10px;
 
-            background: linear-gradient(
-                135deg,
-                #6366f1,
-                #8b5cf6
-            );
+            background: linear-gradient(135deg,
+                    #6366f1,
+                    #8b5cf6);
 
             color: white;
 
@@ -144,59 +141,53 @@
 
 <body>
 
-<div class="login-box">
+    <div class="login-box">
 
-    <h1>✨ 星轨初途</h1>
+        <h1>✨ 星轨初途</h1>
 
-    <p class="tip">
-        欢迎回来，请登录你的账号
-    </p>
+        <p class="tip">
+            欢迎回来，请登录你的账号
+        </p>
 
 
-    <form>
+        
+        <form action="/login" method="POST">
 
-        <div class="input-box">
-            <label>用户名</label>
+            <div class="input-box">
+                <label>用户名</label>
 
-            <input
-                type="text"
-                placeholder="请输入用户名"
-            >
+                <input type="text" name="username" placeholder="请输入用户名" required>
+            </div>
+
+            <div class="input-box">
+                <label>密码</label>
+
+                <input type="password" name="password" placeholder="请输入密码" required>
+            </div>
+
+            <button class="login-button" type="submit">
+                登录
+            </button>
+
+        </form>
+
+
+        <div class="register">
+            还没有账号？
+            <a href="register.html">
+                立即注册
+            </a>
         </div>
 
 
-        <div class="input-box">
-            <label>密码</label>
-
-            <input
-                type="password"
-                placeholder="请输入密码"
-            >
+        <div class="home">
+            <a href="index.html">
+                ← 返回首页
+            </a>
         </div>
 
-
-        <button class="login-button" type="button">
-            登录
-        </button>
-
-    </form>
-
-
-    <div class="register">
-        还没有账号？
-        <a href="register.html">
-            立即注册
-        </a>
     </div>
-
-
-    <div class="home">
-        <a href="index.html">
-            ← 返回首页
-        </a>
-    </div>
-
-</div>
 
 </body>
+
 </html>

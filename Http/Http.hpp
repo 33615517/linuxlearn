@@ -8,6 +8,7 @@
 #include "Util.hpp"
 #include "Log.hpp"
 #include <sstream>
+#include <functional>
 
 using namespace SocketModule;
 using namespace LogModule;
@@ -33,7 +34,7 @@ const std::string page_404 = "/404.html";
 class HttpRequest
 {
 public:
-    HttpRequest()
+    HttpRequest(bool internal = false) : _is_internal(internal)
     {
     }
 
@@ -95,6 +96,33 @@ public:
             // ./wwwroot/login.html
             _uri = wberoot + _uri;
         }
+        if(_method == "POST")
+        {
+            _is_internal = true;
+            while(true)
+            {
+                Util::ReadOneLine(request, &reqline, gglinespace);
+                if( reqline != gglinespace )
+                {
+                    //获得了request header->key: value
+
+                }
+                else break;
+            }
+        }
+        std::string temp = "?";
+        auto pos = _uri.find(temp);
+
+        if (pos != std::string::npos)
+        {
+            // 一定要先保存 ? 后面的参数
+            _args = _uri.substr(pos + 1);
+
+            // 再把 URI 截成 /login
+            _uri = _uri.substr(0, pos);
+
+            _is_internal = true;
+        }
 
         return true;
     }
@@ -110,6 +138,15 @@ public:
     std::string Uri()
     {
         return _uri;
+    }
+    // 获取是否为内部请求
+    bool IsInternal()
+    {
+        return _is_internal;
+    }
+    std::string Args()
+    {
+        return _args;
     }
 
 private:
@@ -132,6 +169,10 @@ private:
     // HTTP请求正文
     // POST等请求可能携带数据
     std::string _text;
+    // 请求参数
+    std::string _args;
+
+    bool _is_internal;
 };
 
 // HttpResponse：描述一个HTTP响应
@@ -294,17 +335,17 @@ public:
         // 文件读取失败，说明资源不存在
         if (!res)
         {
-            // SetCode(404);
-            // _targetfile = wberoot + page_404; // 设置404页面
-            // int filesize = Util::FileSize(_targetfile);
-            // SetHeader("Content-Length", std::to_string(filesize));
-            // std::string suffix = Uri2Suffix(_targetfile);
-            // SetHeader("Content-Type", suffix);
-            // Util::ReadFileContent(_targetfile, &_text); // 读取404页面内容
-            // return false;
-            SetCode(302);
-            SetHeader("Location", "http://122.51.11.221:8080/404.html");
-            return true;
+            SetCode(404);
+            _targetfile = wberoot + page_404; // 设置404页面
+            int filesize = Util::FileSize(_targetfile);
+            SetHeader("Content-Length", std::to_string(filesize));
+            std::string suffix = Uri2Suffix(_targetfile);
+            SetHeader("Content-Type", suffix);
+            Util::ReadFileContent(_targetfile, &_text); // 读取404页面内容
+            return false;
+            // SetCode(302);
+            // SetHeader("Location", "http://122.51.11.221:8080/404.html");
+            // return true;
         }
         else
         {
@@ -316,6 +357,10 @@ public:
             SetHeader("Content-Type", suffix);
             return true;
         }
+    }
+    void SetText(const std::string &text)
+    {
+        _text = text;
     }
 
     // 对HTTP响应进行反序列化
@@ -357,6 +402,7 @@ public:
 // 3. 找到客户端请求的文件
 // 4. 构建HttpResponse
 // 5. 将HTTP响应发送给客户端
+using http_func_t = std::function<void(HttpRequest &req, HttpResponse &resp)>;
 class Http
 {
 public:
@@ -386,19 +432,36 @@ public:
             // 创建HTTP请求对象
             HttpRequest req;
 
-            // 对客户端发送过来的HTTP请求进行反序列化
-            req.Deserialize(httprequest);
-
             // 创建HTTP响应对象
             HttpResponse resp;
+            // 对客户端发送过来的HTTP请求进行反序列化
+            req.Deserialize(httprequest);
+            if (req.IsInternal())
+            {
+                //_uri : ./wwwroot/login
+                if (_route.find(req.Uri()) == _route.end())
+                {
+                    // 如果路由中没有找到对应的处理函数，则返回404
+                }
+                else
+                {
+                    _route[req.Uri()](req, resp);
 
-            // 将客户端请求URI对应的本地文件设置为响应目标文件
-            resp.SetTargetFile(req.Uri());
+                    std::string response_str = resp.Serialize();
+                    sock->Send(response_str);
+                }
+            }
+            else
+            {
 
-            // 根据目标文件是否存在，构建200或者404响应
-            resp.MakeResponse();
-            std::string response_str = resp.Serialize();
-            sock->Send(response_str);
+                // 将客户端请求URI对应的本地文件设置为响应目标文件
+                resp.SetTargetFile(req.Uri());
+
+                // 根据目标文件是否存在，构建200或者404响应
+                resp.MakeResponse();
+                std::string response_str = resp.Serialize();
+                sock->Send(response_str);
+            }
             // std::string filename = req.Uri();
 
             // // 创建HTTP响应对象
@@ -474,7 +537,16 @@ public:
         _tsvrp->Start([this](std::shared_ptr<Socket> &sock, InetAddr &client)
                       { this->HandlerHttpRquest(sock, client); });
     }
+    void RegisterHandler(const std::string &uri, http_func_t handler)
+    {
+        std::string key = wberoot + uri;
+        auto it = _route.find(key);
+        if (it == _route.end())
+        {
 
+            _route.insert({key, handler});
+        }
+    }
     ~Http()
     {
     }
@@ -483,4 +555,5 @@ private:
     // Http服务器底层的TCP服务器
     // unique_ptr表示Http对象独占这个TcpServer对象
     std::unique_ptr<TcpServer> _tsvrp;
+    std::unordered_map<std::string, http_func_t> _route;
 };
