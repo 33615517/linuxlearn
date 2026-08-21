@@ -17,57 +17,7 @@ void Login(HttpRequest &req, HttpResponse &resp)
     resp.SetText(text);
 }
 
-void Register(HttpRequest &req, HttpResponse &resp)
-{
-    LOG(Loglevel::DEBUG) << req.Args() << ",我们成功进入到了处理数据的逻辑";
-    std::string text = "Hello, " + req.Args() ;
-
-    //登陆认证
-
-
-
-
-
-    resp.SetCode(200);
-    resp.SetHeader("Content-Length", std::to_string(text.size()));
-    resp.SetHeader("Content-Type", "text/plain");
-    resp.SetText(text);
-}
-
-void Register(HttpRequest &req, HttpResponse &resp)
-{
-    LOG(Loglevel::DEBUG) << req.Args() << ",我们成功进入到了处理数据的逻辑";
-    std::string text = "Hello, " + req.Args() ;
-
-    //登陆认证
-
-
-
-
-
-    resp.SetCode(200);
-    resp.SetHeader("Content-Length", std::to_string(text.size()));
-    resp.SetHeader("Content-Type", "text/plain");
-    resp.SetText(text);
-}
-void VipCheck(HttpRequest &req, HttpResponse &resp)
-{
-    LOG(Loglevel::DEBUG) << req.Args() << ",我们成功进入到了处理数据的逻辑";
-    std::string text = "Hello, " + req.Args() ;
-
-    //登陆认证
-
-
-
-
-
-    resp.SetCode(200);
-    resp.SetHeader("Content-Length", std::to_string(text.size()));
-    resp.SetHeader("Content-Type", "text/plain");
-    resp.SetText(text);
-}
-
-
+ 
 int main(int argc, char *argv[])
 {
     if(argc < 2)
@@ -79,8 +29,6 @@ int main(int argc, char *argv[])
     std::unique_ptr<Http> httpserver = std::make_unique<Http>(port);
 
     httpserver->RegisterHandler("/login", Login);
-    httpserver->RegisterHandler("/register", Register);
-    httpserver->RegisterHandler("/vip_check", VipCheck);
 
     httpserver->Start();
     return 0;

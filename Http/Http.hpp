@@ -46,7 +46,7 @@ public:
     }
 
     // 解析HTTP请求行
-    // 例如：
+    // 例如： 
     // GET /index.html HTTP/1.1
     //
     // 最终解析为：
@@ -62,7 +62,7 @@ public:
     // 对收到的完整HTTP请求进行反序列化
     // 即：把HTTP请求字符串解析成HttpRequest对象中的各个成员
     bool Deserialize(std::string &request)
-    {
+    { 
         // 1.提取请求行
         // 从HTTP请求中读取第一行，例如：
         // GET /index.html HTTP/1.1
@@ -355,10 +355,12 @@ public:
             SetHeader("Content-Length", std::to_string(filesize));
             std::string suffix = Uri2Suffix(_targetfile);
             SetHeader("Content-Type", suffix);
-            return true;
+            SetHeader("Set-Cookie", "username=xingguichutu");
+            SetHeader("Set-Cookie", "password=123456");
         }
+        return true;
     }
-    void SetText(const std::string &text)
+    void SetText(const std::string &text) 
     {
         _text = text;
     }
@@ -391,6 +393,8 @@ public:
 
     // 当前HTTP请求对应的服务器本地文件路径
     std::string _targetfile;
+
+    std::vector<std::string> _cookies;
 };
 
 // Http：HTTP服务器的上层封装
